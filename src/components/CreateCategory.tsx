@@ -1,26 +1,25 @@
 import { useForm } from "react-hook-form";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { categoriesState, addCategoryState } from "../atoms";
+import { useSetRecoilState } from "recoil";
+import styled from "styled-components";
+import { categoriesState } from "../atoms";
 
-interface ICa {
+interface IAdd {
   toCategory: string;
 }
 
 function CreateCategory() {
-  const { register, handleSubmit, setValue } = useForm<ICa>();
-  const setCategories = useSetRecoilState(categoriesState);
-  const addCategory = useRecoilValue(addCategoryState);
-  const handleValid = ({ toCategory }: ICa) => {
-    setCategories((prev) => [{ cate: toCategory, addCategory }, ...prev]);
+  const setData = useSetRecoilState(categoriesState);
+  const { register, setValue, handleSubmit } = useForm<IAdd>();
+  const onValid = ({ toCategory }: IAdd) => {
+    setData((prevCategories) => [
+      { title: toCategory, id: Date.now() },
+      ...prevCategories,
+    ]);
     setValue("toCategory", "");
   };
-
   return (
-    <form onSubmit={handleSubmit(handleValid)}>
-      <input
-        {...register("toCategory", {})}
-        placeholder="Write your category"
-      />
+    <form onSubmit={handleSubmit(onValid)}>
+      <input {...register("toCategory")} placeholder="write your category" />
       <button>Add</button>
     </form>
   );
